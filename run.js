@@ -41,7 +41,7 @@ class service {  
     constructor(settings) {
         this.settings = settings;
         let server = 'prod-live-main-userproxy-413930521.us-east-1.elb.amazonaws.com:81';    
-        let query = { 'provider': 'steam', 'ticket': settings.ticket, 'playerNetId': settings.settings, 'cc': 'RU', 'clientGameVersion': settings.v };    
+ten        let query = { 'provider': 'steam', 'ticket': settings.ticket, 'playerNetId': settings.steamId, 'cc': 'RU', 'clientGameVersion': settings.v };    
         let finalQuery = 'http://' + server + '/userproxy?' + this.encodeQueryData(query);    
         this.ws  =  new  WebSocket(finalQuery);    
         this.counter = 1000000; //Counter to track callbacks from WS server
