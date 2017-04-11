@@ -1,0 +1,27 @@
+{
+  "name": "pubgapiexample",
+  "version": "1.0.0",
+  "description": "Example of WS API of PUBG",
+  "main": "run.js",
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "underscore": "^1.8.3",
+    "websocket": "^1.0.24",
+    "ws": "^2.2.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/pubg/example.git"
+  },
+  "author": "Hormold",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://gitlab.com/pubg/example/issues"
+  },
+  "homepage": "https://gitlab.com/pubg/example#README"
+}
