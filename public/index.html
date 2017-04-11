@@ -1,0 +1,214 @@
+<!doctype html>
+<html class="no-js" lang=""  ng-app="pubg">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>PUBG</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <!--[if lt IE 9]>
+            <script src="js/vendor/html5-3.6-respond-1.4.2.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">PUBG DEMO</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Hello, world!</h1>
+        <p>This is just a simple demo of API hacks. If u have a question or ideas - email me: n@csgo.com</p>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-4" ng-controller="AccountController">
+          <h2>Basic Info by steamId</h2>
+          <input type="text" class="form-control" ng-model="steamId" placeholder="SteamId64">
+          <p>Get your steamId - <a href="http://id.csgo.com" target="_blank">here</a></p>
+          <p><button class="btn btn-info" ng-click="getInfo()" role="button">Get user info & accid &raquo;</button></p>
+          <pre ng-if="info">{{info}}</pre>
+        </div>
+        <div class="col-md-8" ng-controller="StatsController">
+          <h2>User Stats</h2>
+          <input type="text" class="form-control" ng-model="data.accountId" placeholder="accountId">
+          <select class="form-control" ng-model="data.mode">
+            <option value="solo">MODE: solo</option>
+            <option value="duo">MODE: duo</option>
+            <option value="squad">MODE: squad</option>
+          </select>
+           <select class="form-control" ng-model="data.server">
+            <option value="eu">SERVER: EU</option>
+            <option value="na">SERVER: NA</option>
+            <option value="as">SERVER: AS</option>
+            <option value="oc">SERVER: OC</option>
+            <option value="sa">SERVER: SA</option>
+          </select>
+          <p><button class="btn btn-success" ng-click="getStats()" role="button">Get user stats &raquo;</button></p>
+          <pre ng-if="info">{{info}}</pre>
+       </div>
+       </div>
+       <div class="col-md-12">
+
+       <div class="col-md-4" ng-controller="AccountNameController">
+          <h2>Basic Info by nickname</h2>
+          <input type="text" class="form-control" ng-model="nickname" placeholder="Game Nickname">
+          <p><button class="btn btn-info" ng-click="getInfo()" role="button">Get user info & accid &raquo;</button></p>
+          <pre ng-if="info">{{info}}</pre>
+        </div>
+
+       <div class="col-md-8" ng-controller="LeaderController">
+          <h2>Leaderboard</h2>
+          <select class="form-control" ng-model="data.type">
+            <option value="Rating">TYPE: Rating</option>
+            <option value="WinPoints">TYPE: WinPoints</option>
+            <option value="KillPoints">TYPE: KillPoints</option>
+          </select>
+          <select class="form-control" ng-model="data.mode">
+            <option value="solo">MODE: solo</option>
+            <option value="duo">MODE: duo</option>
+            <option value="squad">MODE: squad</option>
+          </select>
+           <select class="form-control" ng-model="data.server">
+            <option value="eu">SERVER: EU</option>
+            <option value="na">SERVER: NA</option>
+            <option value="as">SERVER: AS</option>
+            <option value="oc">SERVER: OC</option>
+            <option value="sa">SERVER: SA</option>
+          </select>
+          <p><button class="btn btn-success" ng-click="getStats()" role="button">Get leaderboard &raquo;</button></p>
+          <pre ng-if="info">{{info}}</pre>
+       </div>
+       </div>
+
+       <div class="col-md-4" ng-controller="AccountIDController">
+          <h2>Basic Info by accountId</h2>
+          <input type="text" class="form-control" ng-model="accountId" placeholder="Game accountId">
+          <p><button class="btn btn-info" ng-click="getInfo()" role="button">Get user info &raquo;</button></p>
+          <pre ng-if="info">{{info}}</pre>
+        </div>
+
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>&copy; 2017 </p>
+      </footer>
+    </div> <!-- /container -->
+        <!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+    
+        <script src="js/vendor/bootstrap.min.js"></script>
+        <script src="js/main.js"></script>
+        -->
+        <script src="js/angular.min.js"></script>
+        
+        <script>
+            var app = angular.module("pubg", []);
+
+
+            app.controller("AccountController", [
+              "$scope", "$http", function($scope, $http){
+                $scope.info = "";
+                $scope.steamId = "76561198025631899";
+                $scope.getInfo = function(){
+                  $http.post("/getAccountId", {id: $scope.steamId}).then(function(r){
+                    console.log(r.data);
+                    if(!r.data.success) return alert("Error while loading info by steamId");
+                    var resp = r.data.userData;
+                    $scope.info = JSON.stringify(resp, null, 4);
+                  });
+                };
+              }
+            ]); 
+
+             app.controller("AccountIDController", [
+              "$scope", "$http", function($scope, $http){
+                $scope.info = "";
+                $scope.accountId = "account.59e4ce452ac94e27b02a37ac7a301135";
+                $scope.getInfo = function(){
+                  $http.post("/getAccountByAccountId", {id: $scope.accountId}).then(function(r){
+                    console.log(r.data);
+                    if(!r.data.success) return alert("Error while loading info by accountId");
+                    var resp = r.data.userData;
+                    $scope.info = JSON.stringify(resp, null, 4);
+                  });
+                };
+              }
+            ]); 
+
+            app.controller("AccountNameController", [
+              "$scope", "$http", function($scope, $http){
+                $scope.info = "";
+                $scope.nickname = "BSTAR";
+                $scope.getInfo = function(){
+                  $http.post("/getAccountIdByNickname", {nickname: $scope.nickname}).then(function(r){
+                    console.log(r.data);
+                    if(!r.data.success) return alert("Error while loading info by nickname");
+                    var resp = r.data.userData;
+                    $scope.info = JSON.stringify(resp, null, 4);
+                  });
+                };
+              }
+            ]); 
+
+            app.controller("StatsController", [
+              "$scope", "$http", function($scope, $http){
+                $scope.data = {"mode":"solo", "accountId": "account.59e4ce452ac94e27b02a37ac7a301135", "server": "eu"};
+                $scope.info = "";
+                $scope.getStats = function(){
+                  $http.post("/getStats", $scope.data).then(function(r){
+                    console.log(r.data);
+                    if(!r.data.success) return alert("Error while loading stats :-(");
+                    var resp = r.data.userData;
+                    $scope.info = JSON.stringify(resp, null, 4);
+                  });
+                };
+              }
+            ]); 
+
+            app.controller("LeaderController", [
+              "$scope", "$http", function($scope, $http){
+                $scope.data = {"mode":"solo", "type": "Rating", "server": "eu"};
+                $scope.info = "";
+                $scope.getStats = function(){
+                  $http.post("/getBoard", $scope.data).then(function(r){
+                    console.log(r.data);
+                    if(!r.data.success) return alert("Error while loading stats :-(");
+                    var resp = r.data.userData;
+                    $scope.info = JSON.stringify(resp, null, 4);
+                  });
+                };
+              }
+            ]); 
+
+        </script>
+    </body>
+</html>
