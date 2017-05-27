@@ -40,7 +40,7 @@ const settings = require("./settings.js")
 class service {  
     constructor(settings) {
         this.settings = settings;
-        let server = 'prod-live-main-userproxy-413930521.us-east-1.elb.amazonaws.com:81';    
+        let server = 'entry.playbattlegrounds.com:81'; //Use /health to check server health  
         let query = { 'provider': 'steam', 'ticket': settings.ticket, 'playerNetId': settings.steamId, 'cc': 'RU', 'clientGameVersion': settings.v };    
         let finalQuery = 'http://' + server + '/userproxy?' + this.encodeQueryData(query);    
         this.ws  =  new  WebSocket(finalQuery);    
