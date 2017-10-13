@@ -2,3 +2,5 @@ node_modules/
 app.js
 my.json
 settings.js
+
+README.*.md

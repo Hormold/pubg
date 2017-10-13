@@ -141,7 +141,7 @@
                 $scope.getInfo = function(){
                   $http.post("/getAccountId", {id: $scope.steamId}).then(function(r){
                     console.log(r.data);
-                    if(!r.data.success) return alert("Error while loading info by steamId");
+                    if(r.data.code !== 200) return alert("Error while loading info by steamId");
                     var resp = r.data.userData;
                     $scope.info = JSON.stringify(resp, null, 4);
                   });
@@ -156,7 +156,7 @@
                 $scope.getInfo = function(){
                   $http.post("/getAccountByAccountId", {id: $scope.accountId}).then(function(r){
                     console.log(r.data);
-                    if(!r.data.success) return alert("Error while loading info by accountId");
+                    if(r.data.code !== 200) return alert("Error while loading info by accountId");
                     var resp = r.data.userData;
                     $scope.info = JSON.stringify(resp, null, 4);
                   });
@@ -171,7 +171,11 @@
                 $scope.getInfo = function(){
                   $http.post("/getAccountIdByNickname", {nickname: $scope.nickname}).then(function(r){
                     console.log(r.data);
-                    if(!r.data.success) return alert("Error while loading info by nickname");
+                    if(r.data.code === 404) {
+                        return alert("player not found");
+                    } else if (r.data.code !== 200) {
+                        return alert("Error while loading info by nickname");
+                    }
                     var resp = r.data.userData;
                     $scope.info = JSON.stringify(resp, null, 4);
                   });
@@ -186,7 +190,7 @@
                 $scope.getStats = function(){
                   $http.post("/getStats", $scope.data).then(function(r){
                     console.log(r.data);
-                    if(!r.data.success) return alert("Error while loading stats :-(");
+                    if(r.data.code !== 200) return alert("Error while loading stats :-(");
                     var resp = r.data.userData;
                     $scope.info = JSON.stringify(resp, null, 4);
                   });
@@ -201,7 +205,7 @@
                 $scope.getStats = function(){
                   $http.post("/getBoard", $scope.data).then(function(r){
                     console.log(r.data);
-                    if(!r.data.success) return alert("Error while loading stats :-(");
+                    if(r.data.code !== 200) return alert("Error while loading stats :-(");
                     var resp = r.data.userData;
                     $scope.info = JSON.stringify(resp, null, 4);
                   });
