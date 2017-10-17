@@ -4,6 +4,8 @@ const  util = require('util');
 const  _ = require("underscore");
 const  e = new EventEmitter;   //no extends because it's works pretty strange with es6 classes
 
+var HttpStatus = require('http-status-codes');
+
 var express = require('express');
 var bodyParser = require('body-parser')
 var app = express();
@@ -36,6 +38,36 @@ Get more info about game protocol using Wireshark and filter: (websocket)
 */
 
 const settings = require("./settings.js")
+
+
+function handlerResponse(res, isSuccess, result) {
+        if (!isSuccess) {
+            if (result === "NullReferenceException") {
+                return res.send({
+                    code: HttpStatus.BAD_REQUEST,
+                    result: result
+                })
+            } else {
+                return res.send({
+                    code: HttpStatus.SERVICE_UNAVAILABLE,
+                    result: result
+                })
+            }
+
+        }
+
+        if (result.length === 0) {
+            return res.send({
+                code: HttpStatus.NOT_FOUND
+            });
+        }
+
+        return res.send({
+            code: HttpStatus.OK,
+            result: result
+        });
+}
+
 
 class service {  
     constructor(settings) {
@@ -117,102 +149,108 @@ class service {  
 
 util.inherits(service, EventEmitter);
 
+
+/*
+    get user states by accountId/nickname/steam64id
+ */
+app.get('/GetBroUserStatesByAccountId/:accountId', function(req, res) {
+    var accountId = req.params.accountId;
+    s.sendMessage("GetBroUserStatesByAccountId", [accountId], function(isSuccess, result) {
+        return handlerResponse(res, isSuccess, result);
+    });
+});
+
+app.get('/GetBroUserStatesByNickname/:nickname', function(req, res) {
+    var nickname = req.params.nickname;
+    s.sendMessage("GetBroUserStatesByNickname", [nickname], function(isSuccess, result) {
+        return handlerResponse(res, isSuccess, result);
+    });
+});
+
+app.get('/GetBroUserStatesBySteamId/:steam64id', function(req, res) {
+    var steam64Id = req.params.steam64id;
+    s.sendMessage("GetBroUserStatesBySteamId", [steam64Id], function(isSuccess, result) {
+        return handlerResponse(res, isSuccess, result);
+    });
+});
+
+
+/*
+    get user record(s) by accountId/nickname
+ */
 //All user stats from all servers with all modes
-app.get("/getAllUserStats/:id", function(req, res) {
-    var id = req.params.id;
-    s.sendMessage("GetUserAllRecord", id, function(isSuccess, result) {
-        if (!isSuccess) return res.send({ success: false, error: 1, data: result })
-        var userData = result;
-        res.send({ success: true, userData });
+app.get("/GetUserAllRecord/:accountId", function(req, res) {
+    var accountId = req.params.accountId;
+    s.sendMessage("GetUserAllRecord", accountId, function(isSuccess, result) {
+        return handlerResponse(res, isSuccess, result);
     });
 });
 
-app.post('/getAccountIdByNickname', function(req, res) {
-    var steamId = req.body.nickname;
-    s.sendMessage("GetBroUserStatesByNickname", [steamId], function(isSuccess, result) {
-        if (!isSuccess) return res.send({ success: false, error: 1, data: result })
-        var userData = result[0];
-        try {
-            var accId = userData.AccountId;
-            res.send({ success: true, userData });
-        } catch (ex) {
-            res.send({ success: false, error: 2 });
-        }
-    });
-});
-
-app.post('/getAccountByAccountId', function(req, res) {
-    var steamId = req.body.id;
-    s.sendMessage("GetBroUserStatesByAccountId", [steamId], function(isSuccess, result) {
-        if (!isSuccess) return res.send({ success: false, error: 1, data: result })
-        var userData = result[0];
-        try {
-            var accId = userData.AccountId;
-            res.send({ success: true, userData });
-        } catch (ex) {
-            res.send({ success: false, error: 2 });
-        }
-    });
-});
-
-
-app.get('/getAccountIdByNickname/:nickname', function(req, res) {
-    var steamId = req.params.nickname;
-    s.sendMessage("GetBroUserStatesByNickname", [steamId], function(isSuccess, result) {
-        if (!isSuccess) return res.send({ success: false, error: 1, data: result })
-        var userData = result[0];
-        try {
-            var accId = userData.AccountId;
-            res.send({ success: true, userData });
-        } catch (ex) {
-            res.send({ success: false, error: 2 });
-        }
-    });
-});
-
-
-app.post('/getAccountId', function(req, res) {
-    var steamId = req.body.id;
-    s.sendMessage("GetBroUserStatesBySteamId", [steamId], function(isSuccess, result) {
-        if (!isSuccess) return res.send({ success: false, error: 1, data: result })
-        var userData = result[0];
-        try {
-            var accId = userData.AccountId;
-            res.send({ success: true, userData });
-        } catch (ex) {
-            res.send({ success: false, error: 2 });
-        }
-    });
-});
-
-app.post("/getStats", function(req, res) {
-    var accountId = req.body.accountId;
-    var mode = req.body.mode || "solo";
-    var server = req.body.server || "eu";
+app.get("/GetUserRecord/", function(req, res) {
+    var accountId = req.query.accountId;
+    var mode = req.query.mode || "solo";
+    var server = req.query.server || "eu";
     s.sendMessage("GetUserRecord", accountId, server, mode, function(isSuccess, result) {
-        if (!isSuccess) return res.send({ success: false, error: 1, data: result })
-        var userData = result;
-        res.send({ success: true, userData });
+        return handlerResponse(res, isSuccess, result);
     });
 });
 
-app.post("/getBoard", function(req, res) {
-    var type = req.body.type || "Rating";
-    var mode = req.body.mode || "solo";
-    var server = req.body.server || "eu";
+
+app.get('/GetUserAllRecordByNickname/:nickname', function(req, res) {
+    var nickname = req.params.nickname;
+
+    s.sendMessage("GetBroUserStatesByNickname", [nickname], function(isSuccess, result) {
+        if (isSuccess) {
+            if (result.length === 0) {
+                return res.send({
+                    code: HttpStatus.NOT_FOUND
+                })
+            } else {
+                var infoPlayer = result[0];
+                s.sendMessage("GetUserAllRecord", infoPlayer.AccountId, function(_isSuccess, _result) {
+                    if (!_isSuccess) {
+                        return res.send({
+                            code: HttpStatus.SERVICE_UNAVAILABLE,
+                            result: _result
+                        })
+                    }
+
+                    return res.send({
+                        code: HttpStatus.OK,
+                        result: {
+                            infoPlayer: infoPlayer,
+                            stats: _result
+                        }
+                    });
+                });
+            }
+        } else {
+            return handlerResponse(res, isSuccess, result);
+        }
+    });
+});
+
+
+/*
+    get records of leader board
+ */
+app.get("/GetBroLeaderboard", function(req, res) {
+    var type = req.query.type || "Rating";
+    var mode = req.query.mode || "solo";
+    var server = req.query.server || "eu";
 
     //Using fake accountId to get leaderbord + user stats to hide our token
     s.sendMessage("GetBroLeaderboard", server, mode, type, "account.59e4ce452ac94e27b02a37ac7a301135", function(isSuccess, result) {
-        if (!isSuccess) return res.send({ success: false, error: 1, data: result })
-        var userData = result;
-        res.send({ success: true, userData });
+        return handlerResponse(res, isSuccess, result);
     });
 });
 
-var myAccountId;
+
+
+
 var s = new service(settings);
 e.on("connected", () => {
-    app.listen(settings.port, function() {
+    app.listen(settings.port, settings.addr, function() {
         console.log(`App listening on port ${settings.port}!`);
     });
     s.sendMessage("Ping");
@@ -222,7 +260,10 @@ e.on("error", (data) => {
     console.log("Error connecting:", data)
 })
 
-e.on("init", (accountId, accountData) => {
-    myAccountId = accountId;
-    console.log("Loginned as", accountId)
+e.on("init", (data, args) => {
+    if (settings.debug) {
+        if (typeof data === "string") {
+            console.log("init", data);
+        }
+    }
 })
