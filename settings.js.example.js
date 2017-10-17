@@ -1,7 +1,8 @@
 module.exports = {
-    "ticket": "",
-    "steamId": "",
-    "v": "2.1.38",
+    "ticket": "0123456789...",
+    "steamId": "765...",
+    "v": "2.6.30",
     "debug": true,
+    "addr": "0.0.0.0",
     "port": 3000
 };

@@ -250,7 +250,7 @@ app.get("/GetBroLeaderboard", function(req, res) {
 
 var s = new service(settings);
 e.on("connected", () => {
-    app.listen(settings.port, function() {
+    app.listen(settings.port, settings.addr, function() {
         console.log(`App listening on port ${settings.port}!`);
     });
     s.sendMessage("Ping");
