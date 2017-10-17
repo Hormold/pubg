@@ -139,10 +139,10 @@
                 $scope.info = "";
                 $scope.steamId = "76561198025631899";
                 $scope.getInfo = function(){
-                  $http.post("/getAccountId", {id: $scope.steamId}).then(function(r){
+                  $http.get("/GetBroUserStatesBySteamId/"+$scope.steamId).then(function(r){
                     console.log(r.data);
                     if(r.data.code !== 200) return alert("Error while loading info by steamId");
-                    var resp = r.data.userData;
+                    var resp = r.data.result;
                     $scope.info = JSON.stringify(resp, null, 4);
                   });
                 };
@@ -154,10 +154,10 @@
                 $scope.info = "";
                 $scope.accountId = "account.59e4ce452ac94e27b02a37ac7a301135";
                 $scope.getInfo = function(){
-                  $http.post("/getAccountByAccountId", {id: $scope.accountId}).then(function(r){
+                  $http.get("/GetBroUserStatesByAccountId/" + $scope.accountId).then(function(r){
                     console.log(r.data);
                     if(r.data.code !== 200) return alert("Error while loading info by accountId");
-                    var resp = r.data.userData;
+                    var resp = r.data.result;
                     $scope.info = JSON.stringify(resp, null, 4);
                   });
                 };
@@ -169,14 +169,14 @@
                 $scope.info = "";
                 $scope.nickname = "BSTAR";
                 $scope.getInfo = function(){
-                  $http.post("/getAccountIdByNickname", {nickname: $scope.nickname}).then(function(r){
+                  $http.get("/GetBroUserStatesByNickname/" + $scope.nickname).then(function(r){
                     console.log(r.data);
                     if(r.data.code === 404) {
                         return alert("player not found");
                     } else if (r.data.code !== 200) {
                         return alert("Error while loading info by nickname");
                     }
-                    var resp = r.data.userData;
+                    var resp = r.data.result;
                     $scope.info = JSON.stringify(resp, null, 4);
                   });
                 };
@@ -188,10 +188,10 @@
                 $scope.data = {"mode":"solo", "accountId": "account.59e4ce452ac94e27b02a37ac7a301135", "server": "eu"};
                 $scope.info = "";
                 $scope.getStats = function(){
-                  $http.post("/getStats", $scope.data).then(function(r){
+                  $http.get("/GetUserRecord/", {params: $scope.data}).then(function(r){
                     console.log(r.data);
                     if(r.data.code !== 200) return alert("Error while loading stats :-(");
-                    var resp = r.data.userData;
+                    var resp = r.data.result;
                     $scope.info = JSON.stringify(resp, null, 4);
                   });
                 };
@@ -203,10 +203,10 @@
                 $scope.data = {"mode":"solo", "type": "Rating", "server": "eu"};
                 $scope.info = "";
                 $scope.getStats = function(){
-                  $http.post("/getBoard", $scope.data).then(function(r){
+                  $http.get("/GetBroLeaderboard", {params: $scope.data}).then(function(r){
                     console.log(r.data);
                     if(r.data.code !== 200) return alert("Error while loading stats :-(");
-                    var resp = r.data.userData;
+                    var resp = r.data.result;
                     $scope.info = JSON.stringify(resp, null, 4);
                   });
                 };
