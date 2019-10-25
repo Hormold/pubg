@@ -202,7 +202,7 @@ app.post("/getBoard", function(req, res) {
     var server = req.body.server || "eu";
 
     //Using fake accountId to get leaderbord + user stats to hide our token
-    s.sendMessage("GetBroLeaderboard", server, mode, type, "account.59e4ce452ac94e27b02a37ac7a301135", function(isSuccess, result) {
+    s.sendMessage("GetBroLeaderboard", server, mode, type, "account.907e55a88b1fd1ded3cbcd49e84b6e53dc15bd9f3ca8e5675379b8dc34d6b67b", function(isSuccess, result) {
         if (!isSuccess) return res.send({ success: false, error: 1, data: result })
         var userData = result;
         res.send({ success: true, userData });
