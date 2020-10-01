@@ -1,4 +1,4 @@
-# pubg
+# PubG(Playerunknown's Battlegrounds)
  Playerunknown’s Battlegrounds Websocket API example
 
 
